@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+
+    <!-- foobar-api.log configuration-->
+    <appender name="${artifactId}-log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>./logs/${artifactId}.log</File>
+        <encoder>
+            <pattern>%d %5p \(%F:%L\) %m%n </pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>./logs/${artifactId}.log.%d{yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+    <logger name="org.eclipse.jetty" additivity="false" level="WARN">
+        <appender-ref ref="${artifactId}-log"/>
+    </logger>
+    <logger name="com.sun.jersey" additivity="false" level="WARN">
+        <appender-ref ref="${artifactId}-log"/>
+    </logger>
+    <root level="DEBUG">
+        <appender-ref ref="${artifactId}-log"/>
+    </root>
+
+
+    <!-- Rest.log configuration -->
+    <appender name="restlog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./logs/rest.log</file>
+        <encoder>
+            <pattern>%m%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>./logs/rest.log.%d{yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="com.marchex.shared.dropwizard.integration.filter.RestLoggingFilter" additivity="false" level="DEBUG">
+        <appender-ref ref="restlog"/>
+    </logger>
+
+</configuration>

@@ -4,6 +4,7 @@
 package ${package};
 
 import ${package}.resources.HelloWorldResource;
+import ${package}.util.*;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -21,6 +22,7 @@ public class DropwizardApplication extends Application<DropwizardConfiguration> 
 
     @Override
     public void initialize(final Bootstrap<DropwizardConfiguration> bootstrap) {
+        LogbackUtils.loadProperties("conf/logback.xml");
         // TODO: application initialization
         // register bundles, commands, or jackson modules here
     }
