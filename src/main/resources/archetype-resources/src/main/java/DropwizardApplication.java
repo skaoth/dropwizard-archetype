@@ -3,11 +3,15 @@
 #set( $symbol_escape = '\' )
 package ${package};
 
-import ${package}.resources.HelloWorldResource;
+import ${package}.resources.*;
 import ${package}.util.*;
+import ch.qos.logback.classic.LoggerContext;
+import com.sun.jersey.api.container.filter.LoggingFilter;
+import com.sun.jersey.api.core.ResourceConfig;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import org.slf4j.LoggerFactory;
 
 public class DropwizardApplication extends Application<DropwizardConfiguration> {
 
@@ -22,7 +26,6 @@ public class DropwizardApplication extends Application<DropwizardConfiguration> 
 
     @Override
     public void initialize(final Bootstrap<DropwizardConfiguration> bootstrap) {
-        LogbackUtils.loadProperties("conf/logback.xml");
         // TODO: application initialization
         // register bundles, commands, or jackson modules here
     }
@@ -30,7 +33,22 @@ public class DropwizardApplication extends Application<DropwizardConfiguration> 
     @Override
     public void run(final DropwizardConfiguration configuration, final Environment environment) {
         registerResources(configuration, environment);
+
+        //configureLogging(environment);
     }
+
+    private void configureLogging(Environment environment) {
+        // enable response/request logging
+        environment.jersey().property(ResourceConfig.PROPERTY_CONTAINER_REQUEST_FILTERS, LoggingFilter.class.getName());
+        environment.jersey().property(ResourceConfig.PROPERTY_CONTAINER_RESPONSE_FILTERS, LoggingFilter.class.getName());
+
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        context.reset();
+
+        LogbackUtils.loadProperties("conf/logback.xml");
+    }
+
+
 
     private void registerResources(DropwizardConfiguration configuration, Environment environment) {
         final HelloWorldResource resource = new HelloWorldResource(

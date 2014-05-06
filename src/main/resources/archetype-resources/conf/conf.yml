@@ -1,2 +1,29 @@
 template: Hello, %s!
-defaultName: Stranger
+defaultName: ${artifactId}-api
+
+server:
+  requestLog:
+    enabled: false
+    appenders:
+      - type: console
+        threshold: OFF
+        timeZone: UTC
+        target: stdout
+
+      - type: file
+        currentLogFilename: ./logs/requests.log
+        archive: true
+        archivedLogFilenamePattern: ./logs/requests.log.%d{yyyy-MM-dd}
+        archivedFileCount: 5
+
+
+logging:
+  level: DEBUG
+
+  appenders:
+    - type: file
+      threshold: INFO
+      currentLogFilename: ./logs/${artifactId}.log
+      archive: true
+      archivedLogFilenamePattern: ./logs/${artifactId}.log.%d{yyyy-MM-dd}.gz
+      archivedFileCount: 5
