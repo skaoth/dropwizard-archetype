@@ -3,9 +3,13 @@
 #set( $symbol_escape = '\' )
 package ${package}.resources;
 
+import ${package}.core.Saying;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Optional;
-import ${package}.core.Saying;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -14,8 +18,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Path("/hello-world")
+@Path("/helloworld")
 @Produces(MediaType.APPLICATION_JSON)
+@Api(value = "/hello", description = "sample endpoint doc")
 public class HelloWorldResource {
     private final String template;
     private final String defaultName;
@@ -29,8 +34,10 @@ public class HelloWorldResource {
 
     @GET
     @Timed
-    public Saying sayHello(@QueryParam("name") Optional<String> name) {
-        final String value = String.format(template, name.or(defaultName));
+    @ApiOperation(value = "sayhello", notes = "sample notes", response = Saying.class)
+    @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad Request"), @ApiResponse(code = 200, message = "Status OK")})
+    public Saying sayHello() {
+        final String value = String.format(template, defaultName);
         return new Saying(counter.incrementAndGet(), value);
     }
 }

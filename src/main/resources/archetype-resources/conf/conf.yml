@@ -2,6 +2,13 @@ template: Hello, %s!
 defaultName: ${artifactId}-api
 
 server:
+  type: simple
+  applicationContextPath: /
+  adminContextPath: /admin
+  connector:
+    type: http
+    port: 8080
+
   requestLog:
     enabled: false
     appenders:
@@ -27,3 +34,8 @@ logging:
       archive: true
       archivedLogFilenamePattern: ./logs/${artifactId}.log.%d{yyyy-MM-dd}.gz
       archivedFileCount: 5
+
+    - type: console
+      threshold: ALL
+      timeZone: UTC
+      target: stdout
