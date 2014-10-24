@@ -25,6 +25,10 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
 import org.slf4j.LoggerFactory;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+import java.util.EnumSet;
 
 public class DropwizardApplication extends Application<DropwizardConfiguration> {
 
@@ -48,11 +52,7 @@ public class DropwizardApplication extends Application<DropwizardConfiguration> 
     public void run(final DropwizardConfiguration configuration, final Environment environment) {
         initSwagger(environment, configuration);
         registerResources(configuration, environment);
-
-        environment.addFilter(CrossOriginFilter.class, "/*")
-        .setInitParam("allowedOrigins", "*")
-        .setInitParam("allowedHeaders", "X-Requested-With,Content-Type,Accept,Origin")
-       	.setInitParam("allowedMethods", "OPTIONS,GET,PUT,POST,DELETE,HEAD");
+        enableCORS(environment);
     }
 
     private void registerResources(DropwizardConfiguration configuration, Environment environment) {
@@ -78,5 +78,15 @@ public class DropwizardApplication extends Application<DropwizardConfiguration> 
         env.jersey().register(new ResourceListingProvider());
         ScannerFactory.setScanner(new DefaultJaxrsScanner());
         ClassReaders.setReader(new DefaultJaxrsApiReader());
+    }
+
+    private void enableCORS(Environment environment) {
+        final FilterRegistration.Dynamic cors =
+            environment.servlets().addFilter("CORS", CrossOriginFilter.class);
+        cors.setInitParameter("allowedOrigins", "*");
+        cors.setInitParameter("allowedHeaders", "X-Requested-With,Content-Type,Accept,Origin");
+        cors.setInitParameter("allowedMethods", "OPTIONS,GET,PUT,POST,DELETE,HEAD");
+
+        cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
     }
 }

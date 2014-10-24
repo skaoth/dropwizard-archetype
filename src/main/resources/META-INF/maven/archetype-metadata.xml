@@ -15,7 +15,6 @@
         <include>**/*.java</include>
       </includes>
     </fileSet>
-
     <fileSet filtered="true" encoding="UTF-8">
       <directory>conf</directory>
       <includes>
@@ -45,6 +44,18 @@
     </fileSet>
     <fileSet filtered="true" encoding="UTF-8">
         <directory>src/main/java/__packageInPathFormat__/health</directory>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+        <directory>src/main/java/__packageInPathFormat__/view</directory>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+        <directory>src/main/resources/__packageInPathFormat__/view</directory>
+        <includes>
+            <include>**/*.*</include>
+        </includes>
+    </fileSet>
+    <fileSet encoding="UTF-8">
+        <directory>src/main/resources/swagger</directory>
     </fileSet>
   </fileSets>
 </archetype-descriptor>
