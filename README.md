@@ -1,0 +1,1 @@
+mvn archetype:generate -DarchetypeGroupId=com.skaoth.dropwizard -DarchetypeArtifactId=dropwizard-simple-archetype -DarchetypeVersion=1.0-SNAPSHOT -DgroupId=com.skaoth -DartifactId=demo -Dversion=1.0-SNAPSHOT
