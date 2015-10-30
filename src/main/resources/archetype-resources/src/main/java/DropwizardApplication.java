@@ -5,27 +5,19 @@ package ${package};
 
 import ${package}.resources.*;
 import ${package}.util.*;
-import ch.qos.logback.classic.LoggerContext;
-import com.sun.jersey.api.container.filter.LoggingFilter;
-import com.sun.jersey.api.core.ResourceConfig;
-import com.wordnik.swagger.config.ConfigFactory;
-import com.wordnik.swagger.config.ScannerFactory;
-import com.wordnik.swagger.config.SwaggerConfig;
-import com.wordnik.swagger.jaxrs.config.DefaultJaxrsScanner;
-import com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider;
-import com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON;
-import com.wordnik.swagger.jaxrs.listing.ResourceListingProvider;
-import com.wordnik.swagger.jaxrs.reader.DefaultJaxrsApiReader;
-import com.wordnik.swagger.reader.ClassReaders;
-import com.wordnik.swagger.reader.ClassReaders$;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.server.SimpleServerFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
-import org.slf4j.LoggerFactory;
+import io.swagger.config.ScannerFactory;
+import io.swagger.jaxrs.config.BeanConfig;
+import io.swagger.jaxrs.config.DefaultJaxrsScanner;
+import io.swagger.jaxrs.listing.ApiListingResource;
+import io.swagger.jaxrs.listing.SwaggerSerializers;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 import java.util.EnumSet;
@@ -68,16 +60,16 @@ public class DropwizardApplication extends Application<DropwizardConfiguration> 
         new AssetsBundle("/swagger").run(env);
         env.jersey().register(new SwaggerResource(ssf.getApplicationContextPath(), "index.ftl"));
 
-        SwaggerConfig config = ConfigFactory.config();
+        BeanConfig config = new BeanConfig();
+        config.setVersion("1.0.0");
+        config.setSchemes(new String[]{"http"});
         config.setBasePath("/");
-        ConfigFactory.setConfig(config);
+        config.setResourcePackage("io.swagger.resources");
+        config.setScan(true);
 
-
-        env.jersey().register(new ApiListingResourceJSON());
-        env.jersey().register(new ApiDeclarationProvider());
-        env.jersey().register(new ResourceListingProvider());
+        env.jersey().register(new ApiListingResource());
+        env.jersey().register(new SwaggerSerializers());
         ScannerFactory.setScanner(new DefaultJaxrsScanner());
-        ClassReaders.setReader(new DefaultJaxrsApiReader());
     }
 
     private void enableCORS(Environment environment) {
